@@ -14,6 +14,13 @@
 ## Temporary Web Server
 npx http-server --cors
 
+**LESSON 1 - Introduction**
+ - Change/Remove/Navigate HTML elements in the DOM
+ - Change/Add CSS styles, content in HTML elements
+ - Read/Change HTML attributes (href, src, alt, custom)
+ - Create/Insert new HTML elements into the DOM
+ - Attach events listeners to HTML elements (click, keypress, submit)
+
 
 **LESSON 2 - getElementById**
 ```javascript
@@ -32,6 +39,7 @@ console.log(Array.isArray(titlesByClass));
 console.log(Array.isArray(Array.from(titlesByClass)));
 console.log(titlesByClass[0]); console.log(titlesByTag[1]);
 
+// Array.from converts the collection of elements (known as a "HTMLCollection") returned into an array: 
 Array.from(titlesByClass).forEach(function(title){
   console.log(title);
 });
@@ -43,6 +51,11 @@ for (var i = 0, length = titlesByClass.length;  i < length; i++) {
 
 **LESSON 4 - querySelector, querySelectorAll [NodeList]**
 ```javascript
+// To query the DOM, there are two main methods:
+
+document.querySelector();
+document.querySelectorAll();
+
 const wmf = document.querySelector('#book-list li:nth-child(2) .name');
 console.log(wmf);
 
@@ -52,9 +65,14 @@ console.log(books);
 books = document.querySelectorAll('#book-list li .name');
 console.log(books);
 
+// Array.from converts the collection of elements (known as a "NODE LIST") returned by querySelectorAll() into an array: 
+// OPTIONAL - Not required at all
+//var x = Array.from(books);
+//x.forEach(function(book){ //console.log(book); })
 Array.from(books).forEach(function(book){
   console.log(book);
 });
+
 ```
 
 **LESSON 5 - textContent, innerHTML**
@@ -80,11 +98,17 @@ console.log('#page-banner node type is: ', banner.nodeType);
 console.log('#page-banner node name is: ', banner.nodeName);
 console.log('#page-banner has child nodes: ', banner.hasChildNodes());
 
+// 'true' is used to clone the entire node, nested nodes and all
 const clonedBanner = banner.cloneNode(true);
 console.log(clonedBanner);
+
+// "Node" is an interface that is implemented by multiple other objects, including "document" and "element". 
+// All objects implementing the "Node" interface can be treated similarly. 
+// The term "node" therefore (in the DOM context) means any object that implements the "Node" interface. 
+// Most commonly that is an element object representing an HTML element.
 ```
 
-**LESSON 7 - Traversing the DOM -- [Node.parentNode, Node.parentElement, Node.childNodes, Node.children]**
+**LESSON 7 - Traversing the DOM (parent/child) -- [Node.parentNode, Node.parentElement, Node.childNodes, Node.children]**
 ```javascript
 const bookList = document.querySelector('#book-list');
 
@@ -109,7 +133,7 @@ Array.from(titles).forEach(function(title){
 });
 ```
 
-**LESSON 8 - Traversing the DOM -- [Node.nextSibling, Node.nextElementSibling, Node.previousSibling, Node.previousElementSibling]**
+**LESSON 8 - Traversing the DOM (sibling) -- [Node.nextSibling, Node.nextElementSibling, Node.previousSibling, Node.previousElementSibling]**
 ```javascript
 const bookList = document.querySelector('#book-list');
 
@@ -173,7 +197,7 @@ Array.from(forms).forEach(function(form){
 });
 
 // add book-list
-const addForm = forms['add-book'];
+const addForm = forms['add-book']; // Returns HTMLCollection
 addForm.addEventListener('submit', function(e){
   e.preventDefault();
   const value = addForm.querySelector('input[type="text"]').value;
@@ -181,12 +205,92 @@ addForm.addEventListener('submit', function(e){
 });
 ```
 
-##Lesson 12 - Creating Elements 
-##Lesson 13 - Styles & Classes 
-##Lesson 15 - Checkboxes & Change Events 
-##Lesson 16 - Custom Search Filter 
-##Lesson 17 - Tabbed Content 
-##Lesson 18 - DOMContentLoaded Event 
+## Lesson 12 - Creating Elements 
+## Lesson 13 - Styles & Classes 
+
+
+**Lesson 14 - Attributes**
+```javascript
+> const book = document.querySelector('li:first-child .name');
+> book
+<- <span class="name">Name of the Wind</span>
+
+> book.getAttribute('class');
+<- "name"
+
+> book.setAttribute('class', 'name-2');
+> book
+<- <span class=​"name-2">​Name of the Wind​</span>​
+
+> book.hasAttribute('class');
+<- true
+
+> book.removeAttribute('class');
+> book
+<- <span>​Name of the Wind​</span>​
+```
+
+
+**Lesson 15 - Checkboxes & Change Events**
+```javascript
+// hide books
+const hideBox = document.querySelector('#hide');
+hideBox.addEventListener('change', function(e){
+  if (hideBox.checked) {
+    list.style.display = "none";
+  } else {
+    list.style.display = "initial";
+  }
+});
+```
+
+
+**Lesson 16 - Custom Search Filter**
+```javascript
+// filter books
+const searchBar = forms['search-books'].querySelector('input');
+searchBar.addEventListener('keyup', (e) => {
+  const term = e.target.value.toLowerCase();
+  const books = list.getElementsByTagName('li');
+  Array.from(books).forEach((book) => {
+    const title = book.firstElementChild.textContent;
+    if(title.toLowerCase().indexOf(e.target.value) != -1){
+      book.style.display = 'block';
+    } else {
+      book.style.display = 'none';
+    }
+  });
+});
+```
+
+
+**Lesson 17 - Tabbed Content**
+```javascript
+// tabbed content
+const tabs = document.querySelector('.tabs');
+const panels = document.querySelectorAll('.panel');
+tabs.addEventListener('click', (e) => {
+  if(e.target.tagName == 'LI'){
+    const targetPanel = document.querySelector(e.target.dataset.target);
+    Array.from(panels).forEach((panel) => {
+      if(panel == targetPanel){
+        panel.classList.add('active');
+      }else{
+        panel.classList.remove('active');
+      }
+    });
+  }
+});
+```
+
+
+**Lesson 18 - DOMContentLoaded Event**
+```javascript
+document.addEventListener('DOMContentLoaded', function(){
+
+})
+```
+
 ```javascript
 document.addEventListener('DOMContentLoaded', function(){
   const list = document.querySelector('#book-list ul');
@@ -275,40 +379,3 @@ document.addEventListener('DOMContentLoaded', function(){
 
 })
 ```
-
-**Lesson 14 - Attributes**
-```javascript
-> const book = document.querySelector('li:first-child .name');
-> book
-<- <span class="name">Name of the Wind</span>
-
-> book.getAttribute('class');
-<- "name"
-
-> book.setAttribute('class', 'name-2');
-> book
-<- <span class=​"name-2">​Name of the Wind​</span>​
-
-> book.hasAttribute('class');
-<- true
-
-> book.removeAttribute('class');
-> book
-<- <span>​Name of the Wind​</span>​
-```
-
-
-**Lesson 15 - Checkboxes & Change Events**
-```javascript
-// hide books
-const hideBox = document.querySelector('#hide');
-hideBox.addEventListener('change', function(e){
-  if (hideBox.checked) {
-    list.style.display = "none";
-  } else {
-    list.style.display = "initial";
-  }
-});
-```
-
-**Lesson 16 - Custom Search Filter**
